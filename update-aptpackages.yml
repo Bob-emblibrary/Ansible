@@ -16,10 +16,10 @@
         path: /var/run/reboot-required
       register: reboot_required
 
-    # Send Discord message when reboot is required
-    - name: Send Discord message
+    # Send Teams message when reboot is required
+    - name: Send Teams message
       uri:
-        url: "{{ discord_webhook_url }}"
+        url: "https://emblibrary.webhook.office.com/webhookb2/b73972b2-b20d-4a3e-81c5-ddd4684ac5d6@9f26c4d8-8e42-44aa-b660-81deb27aafa4/IncomingWebhook/188f776951e44235925ea0720d44f84b/01c95630-9c61-4117-95f5-92363d19bbe3"
         method: POST
         body_format: json
         body: '{"content": "Reboot required on {{ inventory_hostname }}"}'
