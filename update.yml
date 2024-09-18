@@ -9,9 +9,12 @@
     - name: Upgrade all packages on servers
       apt: upgrade=dist force_apt_get=yes
 
-    - name: Check if a reboot is needed on all servers
-      register: reboot_required_file
-      stat: path=/var/run/reboot-required get_md5=no
+    # Check if reboot is required
+    - name: check if system reboot is required
+      become: true
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required
 
     - name: Reboot the box if kernel updated
       reboot:
