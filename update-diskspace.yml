@@ -18,9 +18,6 @@
         method: POST
         headers:
           Content-Type: application/json
-        body: |
-          {
-            "text": "Alert: Disk usage on host {{ inventory_hostname }} is at {{ disk_usage.stdout }}%."
-          }
+        body: "{{ {'text': 'Alert: Disk usage on host ' ~ inventory_hostname ~ ' is at ' ~ disk_usage.stdout ~ '%' } | to_json }}"
         status_code: 200
       when: alert is defined and alert | bool
