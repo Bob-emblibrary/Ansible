@@ -1,25 +1,26 @@
-- hosts: all
-
-  become: true
-
+---
+- name: Check disk usage and notify Microsoft Teams
+  hosts: all
+  become: yes
   tasks:
-
     - name: Get disk usage
-      command: df -h
+      command: df -h --output=pcent / | tail -1 | tr -d '%'
       register: disk_usage
 
-    - name: Check disk space available
-      shell: df -h / | awk 'NR==2 {print $5}'
-      register: disk_usage
+    - name: Check if disk usage is over 80%
+      when: disk_usage.stdout | int > 80
+      set_fact:
+        alert: true
 
-    # Send Teams message when disk space is over 80%
-    - name: Send a notification to Teams Channel
+    - name: Send notification to Microsoft Teams
       uri:
         url: "https://emblibrary.webhook.office.com/webhookb2/b73972b2-b20d-4a3e-81c5-ddd4684ac5d6@9f26c4d8-8e42-44aa-b660-81deb27aafa4/IncomingWebhook/0750ba8d0b2b45ac8efbffa845abc14b/01c95630-9c61-4117-95f5-92363d19bbe3"
         method: POST
-        body_format: json
-        body: '{"content": "Disk space on {{ inventory_hostname }} is above 80%!"}'
         headers:
           Content-Type: application/json
-        status_code: 204
-      when: disk_usage.stdout[:-1]|int > 80
+        body: |
+          {
+            "text": "Alert: Disk usage on host {{ inventory_hostname }} is at {{ disk_usage.stdout }}%."
+          }
+        status_code: 200
+      when: alert is defined and alert | bool
