@@ -4,7 +4,7 @@
   become: yes
   tasks:
     - name: Get disk usage
-      command: df -h --output=pcent / | tail -1 | tr -d '%'
+      shell: df -h --output=pcent / | tail -1 | tr -d '%'
       register: disk_usage
 
     - name: Check if disk usage is over 80%
