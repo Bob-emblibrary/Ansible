@@ -17,15 +17,15 @@
       register: reboot_required
 
     # Send Teams message when reboot is required
-    - name: Send Teams message
+    - name: Send notification to Microsoft Teams
       uri:
-      url: "https://emblibrary.webhook.office.com/webhookb2/b73972b2-b20d-4a3e-81c5-ddd4684ac5d6@9f26c4d8-8e42-44aa-b660-81deb27aafa4/IncomingWebhook/0750ba8d0b2b45ac8efbffa845abc14b/01c95630-9c61-4117-95f5-92363d19bbe3"
-    method: POST
-    headers:
-      Content-Type: application/json
-    body: "{{ {'text': 'Reboot required on ' ~ inventory_hostname} | to_json }}"
-    status_code: 200
-    when: reboot_required.stat.exists
+        url: "https://emblibrary.webhook.office.com/webhookb2/b73972b2-b20d-4a3e-81c5-ddd4684ac5d6@9f26c4d8-8e42-44aa-b660-81deb27aafa4/IncomingWebhook/0750ba8d0b2b45ac8efbffa845abc14b/01c95630-9c61-4117-95f5-92363d19bbe3"
+        method: POST
+        headers:
+          Content-Type: application/json
+        body: "{{ {'text': 'Reboot required on ' ~ inventory_hostname} | to_json }}"
+        status_code: 200
+      when: reboot_required.stat.exists
 
     # Rebooting the host
     - name: Rebooting the host
