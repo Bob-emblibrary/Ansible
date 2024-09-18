@@ -7,6 +7,7 @@
     # Upgrade packages
     - name: upgrade apt packages
       become: yes
+      become_method: sudo
       apt:
         upgrade: yes
         update_cache: yes
